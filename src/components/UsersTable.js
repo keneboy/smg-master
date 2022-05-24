@@ -1,10 +1,28 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import Axios from 'axios'
+import UserDetails from './UserDetails';
 
 const UsersTable = ({ users, loading, error }, { spinner }) => {
-    const [current, seCurrent] = useState()
-    function handleClicked(id) {
-        console.log(`clicked ${id}`);
-        seCurrent(id)
+    const [posts, setPosts] = useState();
+    const [current, setCurrent] = useState(0)
+
+    useEffect(() => {
+
+    }, [current])
+
+
+
+
+    async function handleClicked(id) {
+
+        // we would implement the api call whenever we clicked on any items....
+        try {
+            const { data } = await Axios.get(`https://dummyjson.com/users/${id}`)
+            setPosts(data);
+        } catch (error) {
+            console.log(error)
+        }
+
     }
     if (loading) {
         return <>
@@ -32,7 +50,7 @@ const UsersTable = ({ users, loading, error }, { spinner }) => {
                                     </div>
                                     <div className='col-span-4'>
                                         <div className='flex'>
-                                            <img className='rounded-full mr-3 w-10' src={item?.image} alt="profile image" />
+                                            <img className='rounded-full mr-3 w-10' src={item?.image} alt="profile_image" />
                                             <div className='block'>
                                                 <div className='flex text-[#9991E5]'>
                                                     <p className='mr-1'>{item?.firstName}</p>
@@ -59,6 +77,9 @@ const UsersTable = ({ users, loading, error }, { spinner }) => {
                         </div>
 
                     })
+                }
+                {
+                    posts && Object.keys(posts).length > 0 && <UserDetails user={posts} />
                 }
             </>
 
